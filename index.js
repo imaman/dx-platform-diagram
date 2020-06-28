@@ -1,7 +1,5 @@
-const util = require('util')
 const graphviz = require('graphviz');
 
-// Create digraph G
 var g = graphviz.digraph("G");
 
 // Add node (ID: Hello)
