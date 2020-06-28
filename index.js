@@ -1,28 +1,43 @@
 const graphviz = require('graphviz');
 
-var g = graphviz.digraph("G");
 
 // Add node (ID: Hello)
 // var n1 = g.addNode( "Hello", {"fillcolor" : "red"} );
 // n1.set( "style", "filled" );
 
 
-var n1 = g.addNode("Outlets")
-
-// Add node (ID: World)
-var n2 = g.addNode("DxInfrasturcture");
-
-// Add edge between the two nodes
-var e = g.addEdge(n1, n2);
-e.set( "color", "red" );
-
-
+function buildEdges(g, d, firstIsSource) {
+  d.forEach(curr => {
+    curr.slice(1).forEach(n => {      
+      const e = firstIsSource ? g.addEdge(curr[0], n) : g.addEdge(n, curr[0])
+      e.set('color', 'red')
+    })
+  })  
+}
 
 
+function draw(filename, outgoing, incoming) {
+  var g = graphviz.digraph("G");
+  buildEdges(g, outgoing, true)
+  buildEdges(g, incoming, false)
+  g.output('png', `${filename}.png`);
+  
+}
 
+draw("highlevel", [
+  ["Outlets", "Production", "BuildSupport"],
+  ["Production", "System", "AWS", "GoogleAppEngine"],
+  ["BuildSupport", "BazelBuild", "FalconBuild"],
+  ["BazelBuild", "GCB"],
+  ["FalconBuild", "TC"],
+  ["DxInfrastructure", "ArtifactRegistry"],
+  ["User", "Github", "ArtifactRegistry", "Outlets"]
+], [
+  ["DxInfrastructure", "BuildSupport", "Production", "Outlets", "FalconBuild", "BazelBuild"]
+]);
 
 // console.log( g.to_dot() );
 
 
+
 // Generate a PNG output
-g.output( "png", "test01.png" );
