@@ -20,7 +20,7 @@ function draw(filename, outgoing, incoming) {
   var g = graphviz.digraph("G");
   buildEdges(g, outgoing, true)
   buildEdges(g, incoming, false)
-  g.output('svg', `${filename}.svg`);  
+  g.output('svg', `generated/${filename}.svg`);  
 }
 
 draw("highlevel", [
