@@ -20,8 +20,7 @@ function draw(filename, outgoing, incoming) {
   var g = graphviz.digraph("G");
   buildEdges(g, outgoing, true)
   buildEdges(g, incoming, false)
-  g.output('png', `${filename}.png`);
-  
+  g.output('svg', `${filename}.svg`);  
 }
 
 draw("highlevel", [
@@ -36,8 +35,12 @@ draw("highlevel", [
   ["DxInfrastructure", "BuildSupport", "Production", "Outlets", "FalconBuild", "BazelBuild"]
 ]);
 
-// console.log( g.to_dot() );
 
+draw("fine", [
+  ["Lifecycle", "RolloutService", "DefinitionService"],
+  ["RolloutService", "System", "AWS", "GoogleAppEngine", "BuildOutputService"],
+  ["BuildOutputService", "ArtifactRegistry"],
+  ["User", "Github", "ArtifactRegistry", "Lifecycle"]
+], [
+]);
 
-
-// Generate a PNG output
