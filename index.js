@@ -1,5 +1,10 @@
 const graphviz = require('graphviz');
+const fs = require('fs')
+const path = require('path')
 
+
+const outdir = path.join(__dirname, 'generated')
+fs.mkdirSync(outdir)
 
 // Add node (ID: Hello)
 // var n1 = g.addNode( "Hello", {"fillcolor" : "red"} );
@@ -20,7 +25,7 @@ function draw(filename, outgoing, incoming) {
   var g = graphviz.digraph("G");
   buildEdges(g, outgoing, true)
   buildEdges(g, incoming, false)
-  g.output('svg', `generated/${filename}.svg`);  
+  g.output('svg', `${outdir}/${filename}.svg`);  
 }
 
 draw("highlevel", [
