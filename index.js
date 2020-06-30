@@ -74,40 +74,11 @@ const shapeById = {
   User: 'plain',
   Github: 'circle',
   "CloudProvider(s)": 'circle',
-  System: 'circle',
-  AWS: 'circle',
-  GAE: 'circle',
-  // ---
   DxPlatform: 'box',
-  AppDefinitonService: 'box',
-  BuildDefinitionService: 'box',
-  TimelineService: 'box',
-  // ---
   BuildPlatform: 'egg',
-  BuildOutputService: 'egg',
-  BuildRunService: 'egg',
-  TriggeringService: 'egg',
-  FalconBuild: 'egg',
-  BazelBuild: 'egg',
-  BuildController: 'egg',
   "BuildEngine(s)": 'circle',
-  TC: 'circle',
-  GCB: 'circle',
-  TcAgent: 'egg',
-  GcbAgent: 'egg',
-
-  // --
-  RolloutService: 'parallelogram',
   Production: 'parallelogram',
-
-  // ---
-
-  Lifecycle: 'house',
   Outlets: 'house',
-
-
-  //
-
   ArtifactRegistry: 'cylinder'
 }
 
