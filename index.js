@@ -16,9 +16,10 @@ const shapeById = {
   Github: 'circle',
   // ---
   DxPlatform: 'box',
+  AppDefinitonService: 'box',
+  BuildDefinitionService: 'box',
   // ---
   BuildPlatform: 'egg',
-  BuildDefinitionService: 'egg',
   BuildOutputService: 'egg',
   BuildRunService: 'egg',
   TriggeringService: 'egg',
@@ -51,7 +52,7 @@ const shapeById = {
 
 }
 
-function buildEdges(g, d, firstIsSource) {
+function buildEdges(g, shapeById, d) {
   const set = new Set()
   d.forEach(curr => {
     curr.forEach(v => {
@@ -60,29 +61,33 @@ function buildEdges(g, d, firstIsSource) {
       }
 
       set.add(v)
-      const shape = shapeById[v] || 'oval'
+      const shape = shapeById[v]
+      if (!shape) {
+        throw new Error(`No shape found for "${v}"`)
+      }
       g.addNode(v, {shape})
     })
   })
   d.forEach(curr => {
     curr.slice(1).forEach(n => {      
-      const e = firstIsSource ? g.addEdge(curr[0], n) : g.addEdge(n, curr[0])
+      const e = g.addEdge(curr[0], n)
       e.set('color', 'red')
     })
   })  
 }
 
 
-function draw(filename, outgoing, incoming) {
+function draw(filename, meta, outgoing) {
   var g = graphviz.digraph("G");
-  buildEdges(g, outgoing, true)
-  buildEdges(g, incoming, false)
+  buildEdges(g, meta, outgoing, true)
   g.output('svg', `${outdir}/${filename}.svg`);  
 }
 
-draw("highlevel", [
+
+draw("highlevel", shapeById, [
   ["Outlets", "Production", "BuildPlatform"],
-  ["Production", "System", "AWS", "GoogleAppEngine"],
+  ["Production", "ArtifactRegistry"],
+  // ["Production", "System", "AWS", "GoogleAppEngine"],
   // ["BuildPlatform", "BazelBuild", "FalconBuild"],
   // ["BazelBuild", "GCB"],
   // ["FalconBuild", "TC"],
@@ -91,24 +96,28 @@ draw("highlevel", [
   ["User", "Github", "ArtifactRegistry", "Outlets"],
   // ["TC", "TcAgent"],
   // ["GCB", "GcbAgent"],
-  ["Github", "BuildPlatform"]
-], [
-  ["DxPlatform", "BuildPlatform", "Production", "Outlets"], // "FalconBuild", "BazelBuild",  "GcbAgent", "TcAgent"
-  ["ArtifactRegistry", "AWS", "System", "GoogleAppEngine"]
+  ["Github", "BuildPlatform"],
+  ["BuildPlatform", "DxPlatform"],
+  ["Production", "DxPlatform"],
+  ["Outlets", "DxPlatform"], // "FalconBuild", "BazelBuild",  "GcbAgent", "TcAgent"
 ]);
 
 
-draw("fine", [
+draw("fine", shapeById, [
   ["Lifecycle", "AppDefinitonService", "BuildRunService", "RolloutService"],
   ["RolloutService", "System", "AWS", "GoogleAppEngine", "BuildOutputService"],
   ["BuildOutputService", "ArtifactRegistry"],
   ["User", "Lifecycle", "Github"],
   ["Github", "TriggeringService"],
-  ["TriggeringService", "FalconBuild"],
+  ["TriggeringService", "FalconBuild", "BazelBuild"],
+  ["BazelBuild", "BuildDefinitionService", "GCB", "BuildRunService"],
   ["FalconBuild", "BuildDefinitionService", "TC", "BuildRunService"],
   ["TC", "TcAgent"],
-  ["TcAgent", "BuildOutputService"]
-], [
-  ["ArtifactRegistry", "AWS", "System", "GoogleAppEngine"]
+  ["GCB", "GcbAgent"],
+  ["TcAgent", "BuildOutputService"],
+  ["GcbAgent", "BuildOutputService"],
+  ["AWS", "ArtifactRegistry"],
+  ["System", "ArtifactRegistry"],
+  ["GoogleAppEngine", "ArtifactRegistry"]
 ]);
 
