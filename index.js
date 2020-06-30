@@ -70,6 +70,7 @@ function draw(filename, meta, outgoing, blockClassifier, shapeClassifier) {
   g.output('svg', `${outdir}/${filename}.svg`);  
 }
 
+
 const shapeById = {
   User: 'plain',
   Github: 'circle',
