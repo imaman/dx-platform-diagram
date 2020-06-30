@@ -22,6 +22,7 @@ const shapeById = {
   DxPlatform: 'box',
   AppDefinitonService: 'box',
   BuildDefinitionService: 'box',
+  TimelineService: 'box',
   // ---
   BuildPlatform: 'egg',
   BuildOutputService: 'egg',
@@ -29,6 +30,7 @@ const shapeById = {
   TriggeringService: 'egg',
   FalconBuild: 'egg',
   BazelBuild: 'egg',
+  BuildController: 'egg',
   "BuildEngine(s)": 'circle',
   TC: 'circle',
   GCB: 'circle',
@@ -58,7 +60,7 @@ function buildEdges(g, shapeById, d, classify = x => x) {
 
   function resolve(v) {
     while (true) {
-      const next = classify(v)
+      const next = classify(v) || v
       if (next === v) {
         return v
       }
@@ -66,7 +68,7 @@ function buildEdges(g, shapeById, d, classify = x => x) {
     }
   }
 
-  const set = new Set()
+  const vertices = new Set()
 
   if (!d) {
     throw new Error(`d=${JSON.stringify(d)}, shapebyid=${JSON.stringify(shapeById)}`)
@@ -74,11 +76,11 @@ function buildEdges(g, shapeById, d, classify = x => x) {
   d.forEach(curr => {
     curr.forEach(v => {
       v = resolve(v)
-      if (set.has(v)) {
+      if (vertices.has(v)) {
         return
       }
 
-      set.add(v)
+      vertices.add(v)
       const shape = shapeById[v]
       if (!shape) {
         throw new Error(`No shape found for "${v}"`)
@@ -86,9 +88,21 @@ function buildEdges(g, shapeById, d, classify = x => x) {
       g.addNode(v, {shape})
     })
   })
+
+  const edges = new Set()
   d.forEach(curr => {
-    curr.slice(1).forEach(n => {      
-      const e = g.addEdge(resolve(curr[0]), resolve(n))
+    curr.slice(1).forEach(n => {
+      const from = resolve(curr[0])  
+      const to = resolve(n)
+      if (from === to) {
+        return
+      }
+      const combined = JSON.stringify([from, to])
+      if (edges.has(combined)) {
+        return
+      }
+      edges.add(combined)
+      const e = g.addEdge(from, to)
       e.set('color', 'red')
     })
   })  
@@ -102,26 +116,28 @@ function draw(filename, meta, outgoing, classify) {
 }
 
 
-draw("highlevel", shapeById, [
-  ["User", "Outlets", "Github", "ArtifactRegistry"],
-  ["Outlets", "Production", "BuildPlatform", "DxPlatform"],
-  ["BuildPlatform", "DxPlatform", "BuildEngine(s)", "ArtifactRegistry"],
-  ["Production", "DxPlatform", "CloudProviders", "BuildPlatform"],
-  ["CloudProviders", "ArtifactRegistry"],
-  ["BuildEngine(s)", "BuildPlatform"],
-  ["Github", "BuildPlatform"],
-]);
+// draw("highlevel", shapeById, [
+//   ["User", "Outlets", "Github", "ArtifactRegistry"],
+//   ["Outlets", "Production", "BuildPlatform", "DxPlatform"],
+//   ["BuildPlatform", "DxPlatform", "BuildEngine(s)", "ArtifactRegistry"],
+//   ["Production", "DxPlatform", "CloudProviders", "BuildPlatform"],
+//   ["CloudProviders", "ArtifactRegistry"],
+//   ["BuildEngine(s)", "BuildPlatform"],
+//   ["Github", "BuildPlatform"],
+// ]);
 
 
-draw("fine", shapeById, [
-  ["Lifecycle", "AppDefinitonService", "BuildRunService", "RolloutService"],
-  ["RolloutService", "System", "AWS", "GAE", "BuildOutputService"],
-  ["BuildOutputService", "ArtifactRegistry"],
+
+const all = [
   ["User", "Lifecycle", "Github", "ArtifactRegistry"],
+  ["Lifecycle", "AppDefinitonService", "BuildRunService", "RolloutService", "TimelineService"],
+  ["RolloutService", "System", "AWS", "GAE", "BuildOutputService", "TimelineService"],
+  ["BuildOutputService", "ArtifactRegistry"],
   ["Github", "TriggeringService"],
-  ["TriggeringService", "FalconBuild", "BazelBuild"],
-  ["BazelBuild", "BuildDefinitionService", "GCB", "BuildRunService"],
-  ["FalconBuild", "BuildDefinitionService", "TC", "BuildRunService"],
+  ["TriggeringService", "BuildController"],
+  ["BuildController", "BuildDefinitionService", "BuildRunService", "FalconBuild", "BazelBuild", "TimelineService"],
+  ["BazelBuild", "GCB"],
+  ["FalconBuild", "TC"],
   ["TC", "TcAgent"],
   ["GCB", "GcbAgent"],
   ["TcAgent", "BuildOutputService"],
@@ -129,5 +145,40 @@ draw("fine", shapeById, [
   ["AWS", "ArtifactRegistry"],
   ["System", "ArtifactRegistry"],
   ["GAE", "ArtifactRegistry"]
-]);
+]
+
+
+const classOf = {
+  AWS: 'CloudProviders',
+  AppDefinitonService: 'DxPlatform',
+  ArtifactRegistry: null,
+  BazelBuild: 'BuildPlatform',
+  BuildDefinitionService: 'DxPlatform',
+  BuildOutputService: 'BuildPlatform',
+  BuildRunService: 'BuildPlatform',
+  FalconBuild: 'BuildPlatform',
+  GAE: 'CloudProviders',
+  GCB: 'BuildEngine(s)',
+  GcbAgent: 'BuildPlatform',
+  TimelineService: 'DxPlatform',
+  Github: null,
+  Lifecycle: 'Outlets',
+  RolloutService: 'Production',
+  System: 'CloudProviders',
+  TC: 'BuildEngine(s)',
+  TcAgent: 'BuildPlatform',
+  TriggeringService: 'BuildPlatform',
+  BuildController: 'BuildPlatform',
+  User: null
+}
+
+
+const set = new Set()
+all.forEach(curr => curr.forEach(v => set.add(v)))
+
+console.log([...set].sort().join('\n'))
+
+draw("highlevel", shapeById, all, x => classOf[x])
+draw("fine", shapeById, all);
+
 
