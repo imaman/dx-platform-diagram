@@ -52,10 +52,26 @@ const shapeById = {
 
 }
 
-function buildEdges(g, shapeById, d) {
+function buildEdges(g, shapeById, d, classify = x => x) {
+
+  function resolve(v) {
+    while (true) {
+      const next = classify(v)
+      if (next === v) {
+        return v
+      }
+      v = next
+    }
+  }
+
   const set = new Set()
+
+  if (!d) {
+    throw new Error(`d=${JSON.stringify(d)}, shapebyid=${JSON.stringify(shapeById)}`)
+  }
   d.forEach(curr => {
     curr.forEach(v => {
+      v = resolve(v)
       if (set.has(v)) {
         return
       }
@@ -70,16 +86,16 @@ function buildEdges(g, shapeById, d) {
   })
   d.forEach(curr => {
     curr.slice(1).forEach(n => {      
-      const e = g.addEdge(curr[0], n)
+      const e = g.addEdge(resolve(curr[0]), resolve(n))
       e.set('color', 'red')
     })
   })  
 }
 
 
-function draw(filename, meta, outgoing) {
+function draw(filename, meta, outgoing, classify) {
   var g = graphviz.digraph("G");
-  buildEdges(g, meta, outgoing, true)
+  buildEdges(g, meta, outgoing, classify)
   g.output('svg', `${outdir}/${filename}.svg`);  
 }
 
@@ -99,7 +115,7 @@ draw("highlevel", shapeById, [
   ["Github", "BuildPlatform"],
   ["BuildPlatform", "DxPlatform"],
   ["Production", "DxPlatform"],
-  ["Outlets", "DxPlatform"], // "FalconBuild", "BazelBuild",  "GcbAgent", "TcAgent"
+  ["Outlets", "DxPlatform"] // "FalconBuild", "BazelBuild",  "GcbAgent", "TcAgent"
 ]);
 
 
