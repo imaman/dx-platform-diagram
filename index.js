@@ -83,6 +83,26 @@ const shapeById = {
   ArtifactRegistries: 'cylinder'
 }
 
+
+const currentClassOf = {
+  Buildoscope: 'BuildPlatform',
+  Lifecycle: 'Outlets',
+  Detonomy: 'Production',
+  Statiscope: 'Production',
+  Periscope: 'Production',
+  System: 'CloudProvider(s)',
+  RepoHippo: 'BuildPlatform',
+  VMR: 'BuildPlatform',
+  BazelBuild: 'BuildPlatform',
+  TC: 'BuildEngine(s)',
+  GCB: 'BuildEngine(s)',
+  FalconAgent: 'BuildPlatform',
+  GcbAgent: 'BuildPlatform',
+  ResultStore: 'BuildEngine(s)',
+  AsyncPublisher: 'BuildPlatform',
+  GcBob: 'BuildPlatform'
+}
+
 const classOf = {
   AWS: 'CloudProvider(s)',
   AppDefinitonService: 'DxPlatform',
@@ -101,7 +121,7 @@ const classOf = {
   RolloutService: 'Production',
   System: 'CloudProvider(s)',
   TC: 'BuildEngine(s)',
-  TcAgent: 'BuildPlatform',
+  FalconAgent: 'BuildPlatform',
   TriggeringService: 'BuildPlatform',
   BuildController: 'BuildPlatform',
   User: null
@@ -110,22 +130,21 @@ const classOf = {
 
 const current = [
   ["User", "Lifecycle", "Github", "ArtifactRegistries"],
-  ["Lifecycle", "AppDefinitonService", "BuildRunService", "Production", "TimelineService"],
-  ["Production", "System", "AWS", "GAE", "BuildOutputService", "TimelineService"],
-  ["BuildOutputService", "ArtifactRegistries"],
-  ["Github", "TriggeringService"],
-  ["TriggeringService", "BuildController"],
-  ["BuildController", "BuildDefinitionService", "BuildRunService", "FalconBuild", "BazelBuild"],
-  ["BuildRunService", "TimelineService"],
-  ["BazelBuild", "GCB"],
-  ["FalconBuild", "TC"],
-  ["TC", "TcAgent"],
+  ["Lifecycle", "Buildoscope", "Detonomy", "System", "Periscope", "Statiscope"],
+  ["Statiscope", "System"],
+  ["Periscope", "System"],
+  ["Detonomy", "System"],
+  ["Buildoscope", "TC", "GcBob", "ArtifactRegistries"],
+  ["Github", "RepoHippo", "TC"],
+  ["RepoHippo", "VMR"],
+  ["VMR", "BazelBuild"],
+  ["BazelBuild", "GCB", "GcBob"],
+  ["TC", "FalconAgent"],
   ["GCB", "GcbAgent"],
-  ["TcAgent", "BuildOutputService"],
-  ["GcbAgent", "BuildOutputService"],
-  ["AWS", "ArtifactRegistries"],
+  ["FalconAgent", "ArtifactRegistries", "Buildoscope"],
+  ["GcbAgent", "ResultStore"],
+  ["AsyncPublisher", "ResultStore", "ArtifactRegistries"],
   ["System", "ArtifactRegistries"],
-  ["GAE", "ArtifactRegistries"]
 ]
 
 
@@ -140,9 +159,9 @@ const all = [
   ["BuildRunService", "TimelineService"],
   ["BazelBuild", "GCB"],
   ["FalconBuild", "TC"],
-  ["TC", "TcAgent"],
+  ["TC", "FalconAgent"],
   ["GCB", "GcbAgent"],
-  ["TcAgent", "BuildOutputService"],
+  ["FalconAgent", "BuildOutputService"],
   ["GcbAgent", "BuildOutputService"],
   ["AWS", "ArtifactRegistries"],
   ["System", "ArtifactRegistries"],
@@ -150,6 +169,7 @@ const all = [
 ]
 
 
+draw("06_20", shapeById, current, x => x, x => currentClassOf[x])
 draw("highlevel", shapeById, all, x => classOf[x], x => classOf[x])
 draw("fine", shapeById, all, x => x, x => classOf[x]);
 
