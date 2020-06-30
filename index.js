@@ -14,6 +14,10 @@ if (!fs.existsSync(outdir)) {
 const shapeById = {
   User: 'plain',
   Github: 'circle',
+  CloudProviders: 'circle',
+  System: 'circle',
+  AWS: 'circle',
+  GAE: 'circle',
   // ---
   DxPlatform: 'box',
   AppDefinitonService: 'box',
@@ -25,16 +29,14 @@ const shapeById = {
   TriggeringService: 'egg',
   FalconBuild: 'egg',
   BazelBuild: 'egg',
-  TC: 'egg',
-  GCB: 'egg',
+  "BuildEngine(s)": 'circle',
+  TC: 'circle',
+  GCB: 'circle',
   TcAgent: 'egg',
   GcbAgent: 'egg',
 
   // --
   RolloutService: 'parallelogram',
-  System: 'parallelogram',
-  AWS: 'parallelogram',
-  GoogleAppEngine: 'parallelogram',
   Production: 'parallelogram',
 
   // ---
@@ -101,29 +103,21 @@ function draw(filename, meta, outgoing, classify) {
 
 
 draw("highlevel", shapeById, [
-  ["Outlets", "Production", "BuildPlatform"],
-  ["Production", "ArtifactRegistry"],
-  // ["Production", "System", "AWS", "GoogleAppEngine"],
-  // ["BuildPlatform", "BazelBuild", "FalconBuild"],
-  // ["BazelBuild", "GCB"],
-  // ["FalconBuild", "TC"],
-  // ["DxPlatform", "ArtifactRegistry"],
-  ["BuildPlatform", "ArtifactRegistry"],
-  ["User", "Github", "ArtifactRegistry", "Outlets"],
-  // ["TC", "TcAgent"],
-  // ["GCB", "GcbAgent"],
+  ["User", "Outlets", "Github", "ArtifactRegistry"],
+  ["Outlets", "Production", "BuildPlatform", "DxPlatform"],
+  ["BuildPlatform", "DxPlatform", "BuildEngine(s)", "ArtifactRegistry"],
+  ["Production", "DxPlatform", "CloudProviders", "BuildPlatform"],
+  ["CloudProviders", "ArtifactRegistry"],
+  ["BuildEngine(s)", "BuildPlatform"],
   ["Github", "BuildPlatform"],
-  ["BuildPlatform", "DxPlatform"],
-  ["Production", "DxPlatform"],
-  ["Outlets", "DxPlatform"] // "FalconBuild", "BazelBuild",  "GcbAgent", "TcAgent"
 ]);
 
 
 draw("fine", shapeById, [
   ["Lifecycle", "AppDefinitonService", "BuildRunService", "RolloutService"],
-  ["RolloutService", "System", "AWS", "GoogleAppEngine", "BuildOutputService"],
+  ["RolloutService", "System", "AWS", "GAE", "BuildOutputService"],
   ["BuildOutputService", "ArtifactRegistry"],
-  ["User", "Lifecycle", "Github"],
+  ["User", "Lifecycle", "Github", "ArtifactRegistry"],
   ["Github", "TriggeringService"],
   ["TriggeringService", "FalconBuild", "BazelBuild"],
   ["BazelBuild", "BuildDefinitionService", "GCB", "BuildRunService"],
@@ -134,6 +128,6 @@ draw("fine", shapeById, [
   ["GcbAgent", "BuildOutputService"],
   ["AWS", "ArtifactRegistry"],
   ["System", "ArtifactRegistry"],
-  ["GoogleAppEngine", "ArtifactRegistry"]
+  ["GAE", "ArtifactRegistry"]
 ]);
 
