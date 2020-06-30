@@ -80,13 +80,13 @@ const shapeById = {
   "BuildEngine(s)": 'circle',
   Production: 'parallelogram',
   Outlets: 'house',
-  ArtifactRegistry: 'cylinder'
+  ArtifactRegistries: 'cylinder'
 }
 
 const classOf = {
   AWS: 'CloudProvider(s)',
   AppDefinitonService: 'DxPlatform',
-  ArtifactRegistry: null,
+  ArtifactRegistries: null,
   BazelBuild: 'BuildPlatform',
   BuildDefinitionService: 'DxPlatform',
   BuildOutputService: 'BuildPlatform',
@@ -108,11 +108,11 @@ const classOf = {
 }
 
 
-const all = [
-  ["User", "Lifecycle", "Github", "ArtifactRegistry"],
+const current = [
+  ["User", "Lifecycle", "Github", "ArtifactRegistries"],
   ["Lifecycle", "AppDefinitonService", "BuildRunService", "Production", "TimelineService"],
   ["Production", "System", "AWS", "GAE", "BuildOutputService", "TimelineService"],
-  ["BuildOutputService", "ArtifactRegistry"],
+  ["BuildOutputService", "ArtifactRegistries"],
   ["Github", "TriggeringService"],
   ["TriggeringService", "BuildController"],
   ["BuildController", "BuildDefinitionService", "BuildRunService", "FalconBuild", "BazelBuild"],
@@ -123,9 +123,30 @@ const all = [
   ["GCB", "GcbAgent"],
   ["TcAgent", "BuildOutputService"],
   ["GcbAgent", "BuildOutputService"],
-  ["AWS", "ArtifactRegistry"],
-  ["System", "ArtifactRegistry"],
-  ["GAE", "ArtifactRegistry"]
+  ["AWS", "ArtifactRegistries"],
+  ["System", "ArtifactRegistries"],
+  ["GAE", "ArtifactRegistries"]
+]
+
+
+const all = [
+  ["User", "Lifecycle", "Github", "ArtifactRegistries"],
+  ["Lifecycle", "AppDefinitonService", "BuildRunService", "Production", "TimelineService"],
+  ["Production", "System", "AWS", "GAE", "BuildOutputService", "TimelineService"],
+  ["BuildOutputService", "ArtifactRegistries"],
+  ["Github", "TriggeringService"],
+  ["TriggeringService", "BuildController"],
+  ["BuildController", "BuildDefinitionService", "BuildRunService", "FalconBuild", "BazelBuild"],
+  ["BuildRunService", "TimelineService"],
+  ["BazelBuild", "GCB"],
+  ["FalconBuild", "TC"],
+  ["TC", "TcAgent"],
+  ["GCB", "GcbAgent"],
+  ["TcAgent", "BuildOutputService"],
+  ["GcbAgent", "BuildOutputService"],
+  ["AWS", "ArtifactRegistries"],
+  ["System", "ArtifactRegistries"],
+  ["GAE", "ArtifactRegistries"]
 ]
 
 
