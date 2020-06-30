@@ -129,11 +129,6 @@ const all = [
 ]
 
 
-const set = new Set()
-all.forEach(curr => curr.forEach(v => set.add(v)))
-
-console.log([...set].sort().join('\n'))
-
 draw("highlevel", shapeById, all, x => classOf[x], x => classOf[x])
 draw("fine", shapeById, all, x => x, x => classOf[x]);
 
