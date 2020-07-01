@@ -10,7 +10,6 @@ if (!fs.existsSync(outdir)) {
 
 
 function buildEdges(g, shapeById, d, blockClassifier, shapeClassifier) {
-
   function resolve(v, f) {
     while (true) {
       const next = f(v) || v
@@ -24,7 +23,11 @@ function buildEdges(g, shapeById, d, blockClassifier, shapeClassifier) {
   const vertices = new Set()
   d.forEach(curr => {
     curr.forEach(v => {
-      v = resolve(v, blockClassifier)
+      const resolved = resolve(v, blockClassifier)
+      if (typeof resolved !== 'string') {
+        throw new Error(`bad resoluting of ${v}. It was resolved to ${JSON.stringify(resolved)}`)
+      }
+      v = resolved
       if (vertices.has(v)) {
         return
       }
@@ -58,18 +61,15 @@ function buildEdges(g, shapeById, d, blockClassifier, shapeClassifier) {
 }
 
 
-function draw(filename, meta, data, blockClassifier = x => x) {
+function draw(filename, meta, data, blockClassifier = (_, x) => x) {
   const outgoing = data.edges
   const shapeClassifier = x => data.classOf[x]
 
   if (!blockClassifier) {
     throw new Error(`classify cannot be falsy`)
   }
-  if (!shapeClassifier) {
-    throw new Error(`classify2 cannot be falsy`)
-  }
   var g = graphviz.digraph("G");
-  buildEdges(g, meta, outgoing, blockClassifier, shapeClassifier)
+  buildEdges(g, meta, outgoing, x => blockClassifier(data.classOf, x), shapeClassifier)
   g.output('svg', `${outdir}/${filename}.svg`);  
 }
 
@@ -172,10 +172,13 @@ const eoy2020 ={
   }
 }
 
+function zoomOut(classOf, x) {
+  return classOf[x]
+}
 
 draw("vnow", shapeById, vnow)
-draw("eoy_2020", shapeById, eoy2020, x => eoy2020.classOf[x])
-draw("fine", shapeById, eoy2020)
+draw("eoy_2020_zoomout", shapeById, eoy2020, zoomOut)
+draw("eoy_2020", shapeById, eoy2020)
 // draw("fine", shapeById, eoy2020, x => x, x => classOf[x]);
 
 
