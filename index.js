@@ -58,7 +58,7 @@ function buildEdges(g, shapeById, d, blockClassifier, shapeClassifier) {
 }
 
 
-function draw(filename, meta, data, outgoing_, blockClassifier, shapeClassifier_) {
+function draw(filename, meta, data, blockClassifier) {
   const outgoing = data.edges
   const shapeClassifier = x => data.classOf[x]
 
@@ -173,9 +173,9 @@ const eoy2020 ={
 }
 
 
-draw("vnow", shapeById, vnow, vnow.edges, x => x, x => vnow.classOf[x])
-draw("eoy_2020", shapeById, eoy2020, eoy2020.edges, x => eoy2020.classOf[x], x => eoy2020.classOf[x])
-draw("fine", shapeById, eoy2020, eoy2020.edges, x => x, x => eoy2020.classOf[x])
+draw("vnow", shapeById, vnow, x => x)
+draw("eoy_2020", shapeById, eoy2020, x => eoy2020.classOf[x])
+draw("fine", shapeById, eoy2020, x => x)
 // draw("fine", shapeById, eoy2020, x => x, x => classOf[x]);
 
 
