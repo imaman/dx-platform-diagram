@@ -94,16 +94,19 @@ const vnow = {
     ["Statiscope", "System"],
     ["Periscope", "System"],
     ["Detonomy", "System"],
-    ["Buildoscope", "TC", "GcBob", "ArtifactRegistries"],
+    ["Buildoscope", "TC", "Bob", "ArtifactRegistries"],
     ["Github", "RepoHippo", "TC"],
     ["RepoHippo", "VMR"],
-    ["VMR", "BazelBuild"],
-    ["BazelBuild", "GCB", "GcBob"],
+    ["VMR", "GcbTrigger"],
+    ["GcbTrigger", "GCB"],
+    ["GCB", "WixGcbScripts", "GcbPubSubAdapter", "RBE"],
+    ["GcbPubSubAdapter", "GcbGithubSync", "GcbMetrics", "GcbStatusSyncNotifier"],
+    ["WixGcbScripts", "AsyncPublisher"],
     ["TC", "FalconAgent"],
-    ["GCB", "GcbAgent"],
+    ["GcbGithubSync", "Github"],
     ["FalconAgent", "ArtifactRegistries", "Buildoscope"],
-    ["GcbAgent", "ResultStore"],
-    ["AsyncPublisher", "ResultStore", "ArtifactRegistries"],
+    ["RBE", "ResultStore"],
+    ["AsyncPublisher", "ResultStore", "ArtifactRegistries", "Bob", "RcSnitch"],
     ["System", "ArtifactRegistries"],
   ],
 
@@ -116,14 +119,21 @@ const vnow = {
     System: 'CloudProvider(s)',
     RepoHippo: 'BuildPlatform',
     VMR: 'BuildPlatform',
-    BazelBuild: 'BuildPlatform',
+    GcbTrigger: 'BuildPlatform',
+    WixGcbScripts: 'BuildPlatform',
+    GcbPubSubAdapter: 'BuildPlatform',
     TC: 'BuildEngine(s)',
     GCB: 'BuildEngine(s)',
+    RBE: 'BuildEngine(s)',
+    GcbGithubSync: 'BuildPlatform',
+    GcbMetrics: 'BuildPlatform',
+    GcbStatusSyncNotifier: 'BuildPlatform',
+    RcSnitch: 'BuildPlatform',
     FalconAgent: 'BuildPlatform',
     GcbAgent: 'BuildPlatform',
     ResultStore: 'BuildEngine(s)',
     AsyncPublisher: 'BuildPlatform',
-    GcBob: 'BuildPlatform'
+    Bob: 'BuildPlatform'
   }
 }
   
@@ -181,4 +191,32 @@ draw("eoy_2020_zoomout", shapeById, eoy2020, zoomOut)
 draw("eoy_2020", shapeById, eoy2020)
 // draw("fine", shapeById, eoy2020, x => x, x => classOf[x]);
 
+
+
+
+// notes from ShayS:
+// vmr -> GcbTrigger
+// GcbTrigger -> Gcb
+// gcb -> (pubsub) -> GcbPubSubAdapter
+// GcbPubSubAdapter -> GcbGithubSync (updates github with the result)
+// GcbPubSubAdapter -> GcbMetrics (metrics in grafana/newrelic)
+// GcbPubSubAdapter -> GcbStatusSyncNotifier (updates in slack)
+// step in the build template triggers AsyncPublisher
+
+// GCB - orchestration the real step happens in RBE, the other (pull a docker and run) happens on GCB
+// we have some glue code running in the GCB steps
+// RBE - where the real work happens (the actual bazel build)
+// results from RBE uploaded to resultstore
+
+
+// AsyncPublisher -> Bob
+// AsyncPublisher -> RcSnitch
+// is bob used by other services?
+// which other services send data to RcSnitch?
+
+
+
+
+// LabelDex? - ask shahar
+// FlakyTestServer?
 
