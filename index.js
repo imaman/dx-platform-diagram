@@ -58,7 +58,10 @@ function buildEdges(g, shapeById, d, blockClassifier, shapeClassifier) {
 }
 
 
-function draw(filename, meta, outgoing, blockClassifier, shapeClassifier) {
+function draw(filename, meta, data, outgoing, blockClassifier, shapeClassifier) {
+  outgoing = data.edges
+  shapeClassifier = x => data.classOf[x]
+
   if (!blockClassifier) {
     throw new Error(`classify cannot be falsy`)
   }
@@ -104,7 +107,7 @@ const vnow = {
     ["System", "ArtifactRegistries"],
   ],
 
-  ClassOf: {
+  classOf: {
     Buildoscope: 'BuildPlatform',
     Lifecycle: 'Outlets',
     Detonomy: 'Production',
@@ -170,9 +173,9 @@ const eoy2020 ={
 }
 
 
-draw("vnow", shapeById, vnow.edges, x => x, x => vnow.ClassOf[x])
-draw("eoy_2020", shapeById, eoy2020.edges, x => eoy2020.classOf[x], x => eoy2020.classOf[x])
-draw("fine", shapeById, eoy2020.edges, x => x, x => eoy2020.classOf[x])
+draw("vnow", shapeById, vnow, vnow.edges, x => x, x => vnow.classOf[x])
+draw("eoy_2020", shapeById, eoy2020, eoy2020.edges, x => eoy2020.classOf[x], x => eoy2020.classOf[x])
+draw("fine", shapeById, eoy2020, eoy2020.edges, x => x, x => eoy2020.classOf[x])
 // draw("fine", shapeById, eoy2020, x => x, x => classOf[x]);
 
 
