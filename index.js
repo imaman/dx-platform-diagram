@@ -84,93 +84,95 @@ const shapeById = {
 }
 
 
-const currentClassOf = {
-  Buildoscope: 'BuildPlatform',
-  Lifecycle: 'Outlets',
-  Detonomy: 'Production',
-  Statiscope: 'Production',
-  Periscope: 'Production',
-  System: 'CloudProvider(s)',
-  RepoHippo: 'BuildPlatform',
-  VMR: 'BuildPlatform',
-  BazelBuild: 'BuildPlatform',
-  TC: 'BuildEngine(s)',
-  GCB: 'BuildEngine(s)',
-  FalconAgent: 'BuildPlatform',
-  GcbAgent: 'BuildPlatform',
-  ResultStore: 'BuildEngine(s)',
-  AsyncPublisher: 'BuildPlatform',
-  GcBob: 'BuildPlatform'
+const vnow = {
+  edges: [
+    ["User", "Lifecycle", "Github", "ArtifactRegistries"],
+    ["Lifecycle", "Buildoscope", "Detonomy", "System", "Periscope", "Statiscope"],
+    ["Statiscope", "System"],
+    ["Periscope", "System"],
+    ["Detonomy", "System"],
+    ["Buildoscope", "TC", "GcBob", "ArtifactRegistries"],
+    ["Github", "RepoHippo", "TC"],
+    ["RepoHippo", "VMR"],
+    ["VMR", "BazelBuild"],
+    ["BazelBuild", "GCB", "GcBob"],
+    ["TC", "FalconAgent"],
+    ["GCB", "GcbAgent"],
+    ["FalconAgent", "ArtifactRegistries", "Buildoscope"],
+    ["GcbAgent", "ResultStore"],
+    ["AsyncPublisher", "ResultStore", "ArtifactRegistries"],
+    ["System", "ArtifactRegistries"],
+  ],
+
+  ClassOf: {
+    Buildoscope: 'BuildPlatform',
+    Lifecycle: 'Outlets',
+    Detonomy: 'Production',
+    Statiscope: 'Production',
+    Periscope: 'Production',
+    System: 'CloudProvider(s)',
+    RepoHippo: 'BuildPlatform',
+    VMR: 'BuildPlatform',
+    BazelBuild: 'BuildPlatform',
+    TC: 'BuildEngine(s)',
+    GCB: 'BuildEngine(s)',
+    FalconAgent: 'BuildPlatform',
+    GcbAgent: 'BuildPlatform',
+    ResultStore: 'BuildEngine(s)',
+    AsyncPublisher: 'BuildPlatform',
+    GcBob: 'BuildPlatform'
+  }
+}
+  
+const eoy2020 ={
+  edges: [
+    ["User", "Lifecycle", "Github", "ArtifactRegistries"],
+    ["Lifecycle", "AppDefinitonService", "BuildRunService", "Production", "TimelineService"],
+    ["Production", "System", "AWS", "GAE", "BuildOutputService", "TimelineService"],
+    ["BuildOutputService", "ArtifactRegistries"],
+    ["Github", "TriggeringService"],
+    ["TriggeringService", "BuildController"],
+    ["BuildController", "BuildDefinitionService", "BuildRunService", "FalconBuild", "BazelBuild"],
+    ["BuildRunService", "TimelineService"],
+    ["BazelBuild", "GCB"],
+    ["FalconBuild", "TC"],
+    ["TC", "FalconAgent"],
+    ["GCB", "GcbAgent"],
+    ["FalconAgent", "BuildOutputService"],
+    ["GcbAgent", "BuildOutputService"],
+    ["AWS", "ArtifactRegistries"],
+    ["System", "ArtifactRegistries"],
+    ["GAE", "ArtifactRegistries"]
+  ],
+  classOf: {
+    AWS: 'CloudProvider(s)',
+    AppDefinitonService: 'DxPlatform',
+    ArtifactRegistries: null,
+    BazelBuild: 'BuildPlatform',
+    BuildDefinitionService: 'DxPlatform',
+    BuildOutputService: 'BuildPlatform',
+    BuildRunService: 'BuildPlatform',
+    FalconBuild: 'BuildPlatform',
+    GAE: 'CloudProvider(s)',
+    GCB: 'BuildEngine(s)',
+    GcbAgent: 'BuildPlatform',
+    TimelineService: 'DxPlatform',
+    Github: null,
+    Lifecycle: 'Outlets',
+    RolloutService: 'Production',
+    System: 'CloudProvider(s)',
+    TC: 'BuildEngine(s)',
+    FalconAgent: 'BuildPlatform',
+    TriggeringService: 'BuildPlatform',
+    BuildController: 'BuildPlatform',
+    User: null
+  }
 }
 
-const classOf = {
-  AWS: 'CloudProvider(s)',
-  AppDefinitonService: 'DxPlatform',
-  ArtifactRegistries: null,
-  BazelBuild: 'BuildPlatform',
-  BuildDefinitionService: 'DxPlatform',
-  BuildOutputService: 'BuildPlatform',
-  BuildRunService: 'BuildPlatform',
-  FalconBuild: 'BuildPlatform',
-  GAE: 'CloudProvider(s)',
-  GCB: 'BuildEngine(s)',
-  GcbAgent: 'BuildPlatform',
-  TimelineService: 'DxPlatform',
-  Github: null,
-  Lifecycle: 'Outlets',
-  RolloutService: 'Production',
-  System: 'CloudProvider(s)',
-  TC: 'BuildEngine(s)',
-  FalconAgent: 'BuildPlatform',
-  TriggeringService: 'BuildPlatform',
-  BuildController: 'BuildPlatform',
-  User: null
-}
 
-
-const current = [
-  ["User", "Lifecycle", "Github", "ArtifactRegistries"],
-  ["Lifecycle", "Buildoscope", "Detonomy", "System", "Periscope", "Statiscope"],
-  ["Statiscope", "System"],
-  ["Periscope", "System"],
-  ["Detonomy", "System"],
-  ["Buildoscope", "TC", "GcBob", "ArtifactRegistries"],
-  ["Github", "RepoHippo", "TC"],
-  ["RepoHippo", "VMR"],
-  ["VMR", "BazelBuild"],
-  ["BazelBuild", "GCB", "GcBob"],
-  ["TC", "FalconAgent"],
-  ["GCB", "GcbAgent"],
-  ["FalconAgent", "ArtifactRegistries", "Buildoscope"],
-  ["GcbAgent", "ResultStore"],
-  ["AsyncPublisher", "ResultStore", "ArtifactRegistries"],
-  ["System", "ArtifactRegistries"],
-]
-
-
-const all = [
-  ["User", "Lifecycle", "Github", "ArtifactRegistries"],
-  ["Lifecycle", "AppDefinitonService", "BuildRunService", "Production", "TimelineService"],
-  ["Production", "System", "AWS", "GAE", "BuildOutputService", "TimelineService"],
-  ["BuildOutputService", "ArtifactRegistries"],
-  ["Github", "TriggeringService"],
-  ["TriggeringService", "BuildController"],
-  ["BuildController", "BuildDefinitionService", "BuildRunService", "FalconBuild", "BazelBuild"],
-  ["BuildRunService", "TimelineService"],
-  ["BazelBuild", "GCB"],
-  ["FalconBuild", "TC"],
-  ["TC", "FalconAgent"],
-  ["GCB", "GcbAgent"],
-  ["FalconAgent", "BuildOutputService"],
-  ["GcbAgent", "BuildOutputService"],
-  ["AWS", "ArtifactRegistries"],
-  ["System", "ArtifactRegistries"],
-  ["GAE", "ArtifactRegistries"]
-]
-
-
-draw("06_20", shapeById, current, x => x, x => currentClassOf[x])
-draw("highlevel", shapeById, all, x => classOf[x], x => classOf[x])
-draw("fine", shapeById, all, x => x, x => classOf[x]);
+draw("vnow", shapeById, vnow.edges, x => x, x => vnow.ClassOf[x])
+draw("eoy_2020", shapeById, eoy2020.edges, x => eoy2020.classOf[x], x => eoy2020.classOf[x])
+draw("fine", shapeById, eoy2020.edges, x => x, x => eoy2020.classOf[x])
+// draw("fine", shapeById, eoy2020, x => x, x => classOf[x]);
 
 
