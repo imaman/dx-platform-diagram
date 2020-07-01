@@ -58,9 +58,9 @@ function buildEdges(g, shapeById, d, blockClassifier, shapeClassifier) {
 }
 
 
-function draw(filename, meta, data, outgoing, blockClassifier, shapeClassifier) {
-  outgoing = data.edges
-  shapeClassifier = x => data.classOf[x]
+function draw(filename, meta, data, outgoing_, blockClassifier, shapeClassifier_) {
+  const outgoing = data.edges
+  const shapeClassifier = x => data.classOf[x]
 
   if (!blockClassifier) {
     throw new Error(`classify cannot be falsy`)
