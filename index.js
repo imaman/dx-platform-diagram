@@ -77,6 +77,7 @@ function draw(filename, meta, data, blockClassifier = (_, x) => x) {
 const shapeById = {
   User: 'plain',
   Github: 'circle',
+  Slack: 'circle',
   "CloudProvider(s)": 'circle',
   DxPlatform: 'box',
   BuildPlatform: 'egg',
@@ -101,6 +102,7 @@ const vnow = {
     ["GcbTrigger", "GCB"],
     ["GCB", "WixGcbScripts", "GcbPubSubAdapter", "RBE"],
     ["GcbPubSubAdapter", "GcbGithubSync", "GcbMetrics", "GcbStatusSyncNotifier"],
+    ["GcbStatusSyncNotifier", "Slack"],
     ["WixGcbScripts", "AsyncPublisher"],
     ["TC", "FalconAgent"],
     ["GcbGithubSync", "Github"],
