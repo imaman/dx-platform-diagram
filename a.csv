@@ -1,0 +1,24 @@
+service,GH produce topics,GH consume topics,GH KVS,HTTP entries,DB,third parties,HTTP access point,gRPC,rpc,current cross repo state,TODO 
+repo-hippo-server,"vcsUpdated, pullRequestUpdated, *-dead-letter",,,https://build.wix.com/github/events,,,"BI: ""https://frog.wix.com/build-analytics""",,,,
+virtual-mono-repo,"virtual-mono-repo-config-update
+virtual-mono-repo-update",vcsUpdated,"atomic: internal-virtual-mono-repo-update, atomic: virtual-mono-repo-config-update",,,,,"MonoRepoConfigService
+MonoRepoVectorsService
+",,,
+gcb-trigger-webapp,"updateGithubWithUnavailableSkippedBuild, 
+updateGithubWithSkippedBuild, 
+gcb-time-to-fetch-cache, 
+gcb-trigger-webapp-execute-gcb-build-internal,
+ triggerAllMasters, 
+trigger-masters-periodically
+crossRepoSkipped
+*-gcb-trigger-dead-letters","vcsUpdated, virtual-mono-repo-update, triggerAllMastersTopic, pullRequestUpdated
+trigger-masters-periodically
+gcb-trigger-webapp-execute-gcb-build-internal
+","pre-cached-version-resolved-repositories-store, social-repos-store, gcb-time-to-fetch-cache, gcb-trigger-webapp-execute-gcb-build-internal",,,,"gcb, github",consume vmr api,consume build-descriptor-server,,
+vmr-starlarker,,virtual-mono-repo-update,starlark-virtual-mono-repo-state,,,,expose,VmrStarlarker,,,
+gcb-github-sync-webapp,gcbBuildStatus,"gcbBuildStatus, updateGithubWithSkippedBuild, updateGithubWithUnavailableSkippedBuild",gcb_cross_repo_builds_status,,sql,,github,,,,
+gcb-status-sync-notifier,,gcbBuildStatus,,,,,,,using slack rpc api,,
+flaky-tests-server,gcb-flaky-tests,gcbBuildStatus,,,,,,,,,
+gcb-pushtak,,"vcsUpdated, gcbBuildStatus, releaseCompleted, bazel-deployable-target (internal), ",,,sql,,RBE,,expose,,
+build-descriptor-server,"BuildDescriptorChanged, ordered-vcsUpdate (internal)",ordered-vcsUpdate,,,sql,,,,expose,,
+gcb-metrics-webapp,,,,,,,,,,,

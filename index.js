@@ -91,25 +91,30 @@ const shapeById = {
 const vnow = {
   edges: [
     ["User", "Lifecycle", "Github", "ArtifactRegistries"],
-    ["Lifecycle", "Buildoscope", "Detonomy", "System", "Periscope", "Statiscope"],
+    ["Lifecycle", "Buildoscope", "Detonomy", "System", "Periscope", "Statiscope", "GcbPushtak"],
     ["Statiscope", "System"],
     ["Periscope", "System"],
     ["Detonomy", "System"],
-    ["Buildoscope", "TC", "Bob", "ArtifactRegistries"],
+    ["Buildoscope", "TC", "Bob", "ArtifactRegistries", "BuildDescriptorServer"],
     ["Github", "RepoHippo", "TC"],
     ["RepoHippo", "VMR"],
     ["VMR", "GcbTrigger"],
-    ["GcbTrigger", "GCB"],
+    ["GcbTrigger", "GCB", "Github", "BuildDescriptorServer"],
+    ["BuildDescriptorServer", "Github"],
     ["GCB", "WixGcbScripts", "GcbPubSubAdapter", "RBE"],
     ["GcbPubSubAdapter", "GcbGithubSync", "GcbMetrics", "GcbStatusSyncNotifier"],
-    ["GcbStatusSyncNotifier", "Slack"],
+    ["GcbStatusSyncNotifier", "Slack", "Github"],
     ["WixGcbScripts", "AsyncPublisher"],
     ["TC", "FalconAgent"],
-    ["GcbGithubSync", "Github"],
+    ["GcbGithubSync", "Github", "GcbStatusSyncNotifier", "FlakyTestsServer", "GcbPushtak"],
     ["FalconAgent", "ArtifactRegistries", "Buildoscope"],
     ["RBE", "ResultStore"],
     ["AsyncPublisher", "ResultStore", "ArtifactRegistries", "Bob", "RcSnitch"],
     ["System", "ArtifactRegistries"],
+    ["RepoHippo","VMR","GcbTrigger","GcbPushtak"],
+    ["VMR","GcbTrigger","VmrStarlarker"],
+    ["GcbTrigger", "GcbGithubSync"],
+    ["GcbPushtak", "RBE"]
   ],
 
   classOf: {
@@ -135,7 +140,11 @@ const vnow = {
     GcbAgent: 'BuildPlatform',
     ResultStore: 'BuildEngine(s)',
     AsyncPublisher: 'BuildPlatform',
-    Bob: 'BuildPlatform'
+    Bob: 'BuildPlatform',
+    GcbPushtak: 'BuildPlatform',
+    VmrStarlarker: 'BuildPlatform',
+    FlakyTestsServer: 'BuildPlatform',
+    BuildDescriptorServer: 'BuildPlatform'
   }
 }
   
@@ -221,4 +230,11 @@ draw("eoy_2020", shapeById, eoy2020)
 
 // LabelDex? - ask shahar
 // FlakyTestServer?
+
+
+// notes from AvgarM
+//
+// RepoHippo -> Pusthak,Builddescriptiorserver,gcbwebapp,pushtak,vmr-starlarker
+// RepoHippo -> GcbTrigger
+// https://docs.google.com/spreadsheets/d/1xs8U6tDvmkTjOvvYJz3dNssOsrQY3SMzqFrQFAYLRWQ/edit#gid=0
 
