@@ -56,8 +56,8 @@ function buildEdges(g, shapeById, d, blockClassifier, shapeClassifier) {
       edges.add(combined)
       const e = g.addEdge(from, to)
       e.set('color', 'red')
-      // e.set('label', from.substr(0, 3) + "_" + to.substr(0, 3))
-      // e.set('labeltooltip', 'XXXXX_title: ' + from.substr(0, 3) + "_" + to.substr(0, 3))
+      e.set('label', '?')
+      e.set('labeltooltip', 'AAA_ ' + from.substr(0, 3) + "_" + to.substr(0, 3))
       // e.set('id', "e_id_" + from + "_" + to)
     })
   })  
@@ -71,7 +71,7 @@ function draw(filename, meta, data, blockClassifier = (_, x) => x) {
   if (!blockClassifier) {
     throw new Error(`classify cannot be falsy`)
   }
-  var g = graphviz.digraph("G");
+  var g = graphviz.digraph("");
   buildEdges(g, meta, outgoing, x => blockClassifier(data.classOf, x), shapeClassifier)
   g.output('svg', `${outdir}/${filename}.svg`);  
 }
@@ -250,6 +250,49 @@ draw("vnow", shapeById, vnow)
 draw("highlevel_longterm", shapeById, eoy2020, zoomOut)
 draw("eoy_2020", shapeById, eoy2020)
 draw("eoy_2021", shapeById, eoy2021)
+
+
+function inlineSvg(pathToFile) {
+  const content = fs.readFileSync(pathToFile, 'utf-8')
+  return content.replace('<title>%3</title>', '<title></title>')
+}
+
+const html = `
+<html>
+  <head>
+    <style>
+      body {
+        background-color: grey;
+      }
+      h1 {
+        color:blanchedalmond;
+      }
+      img {
+        border-width: 4px;
+        border-color: beige;
+        border-style: none;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 20px;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Vnow (2020-06)</h1>
+    ${inlineSvg("generated/vnow.svg")}
+    <h1>Ideal structure (zoom-out)</h1>
+    ${inlineSvg("generated/highlevel_longterm.svg")}
+    <h1>EOY 2020</h1>
+    ${inlineSvg("generated/eoy_2020.svg")}
+    <h1>EOY 2021</h1>
+    ${inlineSvg("generated/eoy_2021.svg")}
+  </body>
+</html>
+`
+
+fs.writeFileSync('index.html', html)
 // draw("fine", shapeById, eoy2020, x => x, x => classOf[x]);
 
 
