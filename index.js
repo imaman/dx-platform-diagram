@@ -82,7 +82,7 @@ const shapeById = {
   Github: 'circle',
   Slack: 'circle',
   "CloudProvider(s)": 'circle',
-  DxPlatform: 'box',
+  CoreServices: 'box',
   BuildPlatform: 'egg',
   "BuildEngine(s)": 'circle',
   Production: 'parallelogram',
@@ -154,44 +154,90 @@ const vnow = {
 const eoy2020 ={
   edges: [
     ["User", "Lifecycle", "Github", "ArtifactRegistries"],
-    ["Lifecycle", "AppDefinitonService", "BuildRunService", "Production", "TimelineService"],
-    ["Production", "System", "AWS", "GAE", "BuildOutputService", "TimelineService"],
+    ["Lifecycle", "AppDefinitonService", "BuildRunService", "RolloutService", "TimelineService"],
+    ["RolloutService", "System", "BuildOutputService", "TimelineService", "Notifier"],
     ["BuildOutputService", "ArtifactRegistries"],
     ["Github", "TriggeringService"],
     ["TriggeringService", "BuildController"],
-    ["BuildController", "BuildDefinitionService", "BuildRunService", "FalconBuild", "BazelBuild"],
+    ["BuildController", "BuildDefinitionService", "BuildRunService", "FalconBuild", "BazelBuild", "Notifier"],
     ["BuildRunService", "TimelineService"],
     ["BazelBuild", "GCB"],
     ["FalconBuild", "TC"],
-    ["TC", "FalconAgent"],
-    ["GCB", "GcbAgent"],
-    ["FalconAgent", "BuildOutputService"],
-    ["GcbAgent", "BuildOutputService"],
-    ["AWS", "ArtifactRegistries"],
+    ["TC", "FalconScripts"],
+    ["GCB", "GcbScripts"],
+    ["Notifier", "Github", "Slack"],
+    ["FalconScripts", "BuildOutputService"],
+    ["GcbScripts", "BuildOutputService"],
     ["System", "ArtifactRegistries"],
-    ["GAE", "ArtifactRegistries"]
   ],
   classOf: {
     AWS: 'CloudProvider(s)',
-    AppDefinitonService: 'DxPlatform',
+    AppDefinitonService: 'CoreServices',
     ArtifactRegistries: null,
     BazelBuild: 'BuildPlatform',
-    BuildDefinitionService: 'DxPlatform',
+    BuildDefinitionService: 'CoreServices',
     BuildOutputService: 'BuildPlatform',
     BuildRunService: 'BuildPlatform',
     FalconBuild: 'BuildPlatform',
     GAE: 'CloudProvider(s)',
     GCB: 'BuildEngine(s)',
-    GcbAgent: 'BuildPlatform',
-    TimelineService: 'DxPlatform',
+    GcbScripts: 'BuildPlatform',
+    TimelineService: 'CoreServices',
     Github: null,
     Lifecycle: 'Outlets',
     RolloutService: 'Production',
     System: 'CloudProvider(s)',
     TC: 'BuildEngine(s)',
-    FalconAgent: 'BuildPlatform',
+    FalconScripts: 'BuildPlatform',
     TriggeringService: 'BuildPlatform',
     BuildController: 'BuildPlatform',
+    Notifier: 'CoreServices',
+    User: null
+  }
+}
+
+const eoy2021 ={
+  edges: [
+    ["User", "Lifecycle", "Github", "ArtifactRegistries"],
+    ["Lifecycle", "AppDefinitonService", "BuildRunService", "Production", "TimelineService"],
+    ["Production", "System", "AWS", "GAE", "WixServerless", "BuildOutputService", "TimelineService"],
+    ["BuildOutputService", "ArtifactRegistries"],
+    ["Github", "TriggeringService"],
+    ["TriggeringService", "BuildController"],
+    ["BuildController", "BuildDefinitionService", "BuildRunService", "FalconBuild", "BazelBuild"],
+    ["BuildRunService", "TimelineService"],
+    ["BazelBuild", "Buildkite (?)"],
+    ["FalconBuild", "Buildkite (?)"],
+    ["Buildkite (?)", "FalconScripts"],
+    ["Buildkite (?)", "BazelScripts"],
+    ["FalconScripts", "BuildOutputService"],
+    ["BazelScripts", "BuildOutputService"],
+    ["AWS", "ArtifactRegistries"],
+    ["System", "ArtifactRegistries"],
+    ["GAE", "ArtifactRegistries"],
+    ["WixServerless", "ArtifactRegistries"]
+  ],
+  classOf: {
+    AWS: 'CloudProvider(s)',
+    AppDefinitonService: 'CoreServices',
+    ArtifactRegistries: null,
+    BazelBuild: 'BuildPlatform',
+    BuildDefinitionService: 'CoreServices',
+    BuildOutputService: 'BuildPlatform',
+    BuildRunService: 'BuildPlatform',
+    FalconBuild: 'BuildPlatform',
+    GAE: 'CloudProvider(s)',
+    BazelScripts: 'BuildPlatform',
+    TimelineService: 'CoreServices',
+    Github: null,
+    Lifecycle: 'Outlets',
+    RolloutService: 'Production',
+    System: 'CloudProvider(s)',
+    FalconScripts: 'BuildPlatform',
+    TriggeringService: 'BuildPlatform',
+    BuildController: 'BuildPlatform',
+    WixServerless: 'CloudProvider(s)',
+    'Buildkite (?)': 'BuildEngine(s)',
     User: null
   }
 }
@@ -201,8 +247,9 @@ function zoomOut(classOf, x) {
 }
 
 draw("vnow", shapeById, vnow)
-draw("eoy_2020_zoomout", shapeById, eoy2020, zoomOut)
+draw("highlevel_longterm", shapeById, eoy2020, zoomOut)
 draw("eoy_2020", shapeById, eoy2020)
+draw("eoy_2021", shapeById, eoy2021)
 // draw("fine", shapeById, eoy2020, x => x, x => classOf[x]);
 
 
