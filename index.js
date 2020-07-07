@@ -8,6 +8,9 @@ if (!fs.existsSync(outdir)) {
   fs.mkdirSync(outdir)
 }
 
+function toEdgeSpec(n) {
+  return Array.isArray(n) ? {target: n[0], text: n[1]} : {target: n, text: ''}
+}
 
 function buildEdges(g, shapeById, d, blockClassifier, shapeClassifier) {
   function resolve(v, f) {
@@ -23,9 +26,9 @@ function buildEdges(g, shapeById, d, blockClassifier, shapeClassifier) {
   const vertices = new Set()
   d.forEach(curr => {
     curr.forEach(v => {
-      const resolved = resolve(v, blockClassifier)
+      const resolved = resolve(toEdgeSpec(v).target, blockClassifier)
       if (typeof resolved !== 'string') {
-        throw new Error(`bad resoluting of ${v}. It was resolved to ${JSON.stringify(resolved)}`)
+        throw new Error(`bad resolution of ${v}. It was resolved to ${JSON.stringify(resolved)}`)
       }
       v = resolved
       if (vertices.has(v)) {
@@ -46,8 +49,8 @@ function buildEdges(g, shapeById, d, blockClassifier, shapeClassifier) {
   d.forEach(curr => {
     curr.slice(1).forEach(n => {
       const from = resolve(curr[0], blockClassifier)  
-      const temp = Array.isArray(n) ? {target: n[0], text: n[1]} : {target: n, text: ''}
-      const to = resolve(temp.target, blockClassifier)
+      const edgeSpec = toEdgeSpec(n)
+      const to = resolve(edgeSpec.target, blockClassifier)
       if (from === to) {
         return
       }
@@ -56,12 +59,13 @@ function buildEdges(g, shapeById, d, blockClassifier, shapeClassifier) {
         return
       }
       set.add(combined)
-      edges.push({from, to, text: temp.text})
+      edges.push({from, to, text: edgeSpec.text})
     })
   })  
 
 
   edges.forEach(curr => {
+    console.log('edge: ' + JSON.stringify(curr))
     const e = g.addEdge(curr.from, curr.to)
     e.set('color', 'red')
     if (curr.text) {
@@ -79,6 +83,8 @@ function draw(filename, meta, data, blockClassifier = (_, x) => x) {
   if (!blockClassifier) {
     throw new Error(`classify cannot be falsy`)
   }
+
+  console.log('generating edges for ' + filename)
   var g = graphviz.digraph("");
   buildEdges(g, meta, outgoing, x => blockClassifier(data.classOf, x), shapeClassifier)
   g.output('svg', `${outdir}/${filename}.svg`);  
@@ -207,8 +213,8 @@ const eoy2020 ={
 const eoy2021 ={
   edges: [
     ["User", "Lifecycle", "Github", "ArtifactRegistries"],
-    ["Lifecycle", "AppDefinitonService", "BuildRunService", "Production", "TimelineService"],
-    ["Production", "System", "AWS", "GAE", "WixServerless", "BuildOutputService", "TimelineService"],
+    ["Lifecycle", "AppDefinitonService", "BuildRunService", "RolloutService", "TimelineService"],
+    ["RolloutService", "System", "AWS", "GAE", "WixServerless", "BuildOutputService", "TimelineService"],
     ["BuildOutputService", "ArtifactRegistries"],
     ["Github", "TriggeringService"],
     ["TriggeringService", "BuildController"],
@@ -221,7 +227,7 @@ const eoy2021 ={
     ["FalconScripts", "BuildOutputService"],
     ["BazelScripts", "BuildOutputService"],
     ["AWS", "ArtifactRegistries"],
-    ["System", "ArtifactRegistries"],
+    ["System", ["ArtifactRegistries", "docker pull"]],
     ["GAE", "ArtifactRegistries"],
     ["WixServerless", "ArtifactRegistries"]
   ],
