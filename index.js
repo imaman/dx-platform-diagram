@@ -41,26 +41,34 @@ function buildEdges(g, shapeById, d, blockClassifier, shapeClassifier) {
     })
   })
 
-  const edges = new Set()
+  const edges = []
+  const set = new Set()
   d.forEach(curr => {
     curr.slice(1).forEach(n => {
       const from = resolve(curr[0], blockClassifier)  
-      const to = resolve(n, blockClassifier)
+      const temp = Array.isArray(n) ? {target: n[0], text: n[1]} : {target: n, text: ''}
+      const to = resolve(temp.target, blockClassifier)
       if (from === to) {
         return
       }
       const combined = JSON.stringify([from, to])
-      if (edges.has(combined)) {
+      if (set.has(combined)) {
         return
       }
-      edges.add(combined)
-      const e = g.addEdge(from, to)
-      e.set('color', 'red')
-      e.set('label', '?')
-      e.set('labeltooltip', 'AAA_ ' + from.substr(0, 3) + "_" + to.substr(0, 3))
-      // e.set('id', "e_id_" + from + "_" + to)
+      set.add(combined)
+      edges.push({from, to, text: temp.text})
     })
   })  
+
+
+  edges.forEach(curr => {
+    const e = g.addEdge(curr.from, curr.to)
+    e.set('color', 'red')
+    if (curr.text) {
+      e.set('label', '?')
+      e.set('labeltooltip', curr.text)
+    }
+  })
 }
 
 
