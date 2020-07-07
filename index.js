@@ -56,6 +56,9 @@ function buildEdges(g, shapeById, d, blockClassifier, shapeClassifier) {
       edges.add(combined)
       const e = g.addEdge(from, to)
       e.set('color', 'red')
+      // e.set('label', from.substr(0, 3) + "_" + to.substr(0, 3))
+      // e.set('labeltooltip', 'XXXXX_title: ' + from.substr(0, 3) + "_" + to.substr(0, 3))
+      // e.set('id', "e_id_" + from + "_" + to)
     })
   })  
 }
@@ -238,3 +241,6 @@ draw("eoy_2020", shapeById, eoy2020)
 // RepoHippo -> GcbTrigger
 // https://docs.google.com/spreadsheets/d/1xs8U6tDvmkTjOvvYJz3dNssOsrQY3SMzqFrQFAYLRWQ/edit#gid=0
 
+
+
+// share workplan, design doc, talk with vova how the build works.
