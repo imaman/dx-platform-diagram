@@ -107,7 +107,7 @@ const shapeById = {
 
 const vnow = {
   edges: [
-    ["User", "Lifecycle", "Github", "ArtifactRegistries"],
+    ["User", "Lifecycle", ["Github", "git push, merge, etc..."], ["ArtifactRegistries", "npm install"]],
     ["Lifecycle", "Buildoscope", "Detonomy", "System", "Periscope", "Statiscope", "GcbPushtak"],
     ["Statiscope", "System"],
     ["Periscope", "System"],
@@ -267,8 +267,11 @@ draw("eoy_2021", shapeById, eoy2021)
 
 
 function inlineSvg(pathToFile) {
-  const content = fs.readFileSync(pathToFile, 'utf-8')
-  return content.replace('<title>%3</title>', '<title></title>')
+  let content = fs.readFileSync(pathToFile, 'utf-8')
+  content = content.replace('<title>%3</title>', '<title></title>')
+  const svg = content.indexOf('<svg')
+  content = content.substr(svg)
+  return content
 }
 
 const html = `
