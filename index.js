@@ -88,6 +88,7 @@ function draw(filename, meta, data, blockClassifier = (_, x) => x) {
   var g = graphviz.digraph("");
   buildEdges(g, meta, outgoing, x => blockClassifier(data.classOf, x), shapeClassifier)
   g.output('svg', `${outdir}/${filename}.svg`);  
+  g.output('png', `${outdir}/${filename}.png`);  
 }
 
 
@@ -179,7 +180,7 @@ const eoy2020 ={
     ["FalconBuild", "TC"],
     ["TC", "FalconScripts"],
     ["GCB", "GcbScripts"],
-    ["Notifier", "Github", "Slack"],
+    ["Notifier", /* "Github" */ "Slack"],
     ["FalconScripts", "BuildOutputService"],
     ["GcbScripts", "BuildOutputService"],
     ["System", "ArtifactRegistries"],
