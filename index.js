@@ -170,9 +170,8 @@ const vnow = {
 const eoy2020 ={
   edges: [
     ["User", "Lifecycle", "Github", "ArtifactRegistries"],
-    ["Lifecycle", "DefinitionService", "TimelineService", "RolloutService", "TimelineService"],
+    ["Lifecycle", "DefinitionService", "TimelineService", "RolloutService", "BuildOutputService"],
     ["RolloutService", "System", "BuildOutputService", "TimelineService", "Notifier"],
-    ["BuildOutputService", "ArtifactRegistries"],
     ["Github", "TriggeringService"],
     ["TriggeringService", "BuildController"],
     ["BuildController", "DefinitionService", "TimelineService", "FalconBuild", "BazelBuild", "Notifier"],
@@ -182,8 +181,8 @@ const eoy2020 ={
     ["TC", "FalconScripts"],
     ["GCB", "GcbScripts"],
     ["Notifier", "Slack"], // GithubStatus
-    ["FalconScripts", "BuildOutputService"],
-    ["GcbScripts", "BuildOutputService"],
+    ["FalconScripts", "BuildOutputService", "ArtifactRegistries"],
+    ["GcbScripts", "BuildOutputService", "ArtifactRegistries"],
     ["System", "ArtifactRegistries"],
   ],
   classOf: {
